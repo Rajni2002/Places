@@ -1,8 +1,9 @@
 .appBar {
   border-radius: 15px;
   margin: 30px 0;
+  padding: 1.5rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: row !important;
   justify-content: center;
   align-items: center;
 }
