@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, AppBar, Typography, Grow, Grid } from "@mui/material";
 import { useDispatch } from "react-redux";
 import Posts from "./components/Posts/Posts";
@@ -9,6 +9,7 @@ import "./styles.css";
 import { fetchPosts } from "./redux/feature/postSlice";
 
 function App() {
+  const [selectedId, setSelectedId] = useState(null);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchPosts());
@@ -29,10 +30,10 @@ function App() {
           spacing="3"
         >
           <Grid item xs={12} sm={7}>
-            <Posts />
+            <Posts setSelectedId={setSelectedId}/>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Form />
+            <Form selectedId={selectedId} setSelectedId={setSelectedId}/>
           </Grid>
         </Grid>
       </Grow>

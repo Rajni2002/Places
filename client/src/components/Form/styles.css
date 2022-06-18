@@ -1,11 +1,16 @@
 .form {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  padding: 2rem;
 }
 .fileInput {
   width: 97%;
   margin: 10px 0;
+}
+.input{
+  margin: 1rem !important;
 }
 .buttonSubmit {
   margin-bottom: 10px;
