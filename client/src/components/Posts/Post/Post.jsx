@@ -12,10 +12,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import moment from "moment";
 import "./styles.css";
-
-import "./styles.css";
+import { deletePost } from "../../../redux/feature/postSlice";
+import { useDispatch } from "react-redux";
 
 function Post({ post, setSelectedId }) {
+  const dispatch = useDispatch();
   return (
     <Card className="card">
       <CardMedia
@@ -46,6 +47,9 @@ function Post({ post, setSelectedId }) {
         </Typography>
       </div>
       <CardContent>
+        <Typography variant="h4" className="title" gutterBottom>
+          {post.title}
+        </Typography>
         <Typography variant="h5" className="title" gutterBottom>
           {post.message}
         </Typography>
@@ -55,7 +59,7 @@ function Post({ post, setSelectedId }) {
           <ThumbUpAltIcon fontSize="small" />
           {post.likeCount} Like
         </Button>
-        <Button size="small" color="primary" onClick={() => {}}>
+        <Button size="small" color="primary" onClick={() => {dispatch(deletePost(post._id))}}>
           <DeleteIcon fontSize="small" />
           Delete
         </Button>

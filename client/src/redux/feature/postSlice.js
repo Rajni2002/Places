@@ -8,6 +8,13 @@ export const fetchPosts = createAsyncThunk("/posts/fetchPosts", async () => {
   return response.data;
 });
 
+export const deletePost = createAsyncThunk("/posts/deletePost", async (id) => {
+  const response = await api
+    .delete(`/posts/${id}`)
+    .catch((err) => console.log(err));
+  return id;
+});
+
 export const createPost = createAsyncThunk(
   "/posts/createPosts",
   async (data) => {
@@ -19,18 +26,15 @@ export const createPost = createAsyncThunk(
   }
 );
 
-export const updatePost = createAsyncThunk(
-  "/posts/updatePost",
-  async (obj) => {
-    const {id, updatedPost} = obj;
-    console.log(updatedPost);
-    const response = await api
-      .patch(`/posts/${id}`, updatedPost)
-      .catch((err) => console.log(err));
-    const data = response.data;
-    return {id, data};
-  }
-);
+export const updatePost = createAsyncThunk("/posts/updatePost", async (obj) => {
+  const { id, updatedPost } = obj;
+  console.log(updatedPost);
+  const response = await api
+    .patch(`/posts/${id}`, updatedPost)
+    .catch((err) => console.log(err));
+  const data = response.data;
+  return { id, data };
+});
 
 const postSlice = createSlice({
   name: "posts",
@@ -40,14 +44,6 @@ const postSlice = createSlice({
       loading: false,
     },
   },
-  // reducers: {
-  //   createPosts: (state, action)=>{
-
-  //   },
-  //   setPosts: (state, action)=>{
-
-  //   }
-  // },
   extraReducers: {
     // Fetch Posts
     [fetchPosts.pending]: (state) => {
@@ -72,21 +68,20 @@ const postSlice = createSlice({
       state.posts.loading = false;
     },
     // Updating the post
-    [updatePost.pending]: (state) => {
+    [deletePost.pending]: (state) => {
       state.posts.loading = true;
     },
-    [updatePost.fulfilled]: (state, { payload }) => {
+    [deletePost.fulfilled]: (state, { payload }) => {
       state.posts.loading = false;
       const prevState = state.posts.entities;
-      state.posts.entities = prevState.map((post) =>
-        post._id === payload.id ? payload.data : post
-      );
+      state.posts.entities = prevState.filter((post)=> post._id !== payload);
     },
-    [updatePost.rejected]: (state) => {
+    [deletePost.rejected]: (state) => {
       state.posts.loading = false;
     },
+    // Deleting the post
+    
   },
 });
 
-// export const { createPosts, setPosts } = postSlice.actions;
 export default postSlice;

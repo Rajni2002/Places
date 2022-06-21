@@ -5,7 +5,7 @@ import { TextField, Button, Typography, Paper } from "@mui/material";
 import { createPost, updatePost } from "../../redux/feature/postSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-function Form({ selectedId }) {
+function Form({ selectedId, setSelectedId }) {
   const dispatch = useDispatch();
   const [postData, setPostData] = useState({
     creator: "",
@@ -15,17 +15,29 @@ function Form({ selectedId }) {
     selectedFile: "",
   });
   const post = useSelector((state) => {
-    return (selectedId
+    return selectedId
       ? state.post.posts.entities.find((p) => p._id === selectedId)
-      : null)
+      : null;
   });
   useEffect(() => {
     if (post) setPostData(post);
   }, [post]);
 
+  function clear() {
+    console.log("inside Clear")
+    setPostData({
+      creator: "",
+      title: "",
+      message: "",
+      tags: "",
+      selectedFile: "",
+    });
+    setSelectedId(null);
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("fired submit")
+    console.log("fired submit");
     if (
       postData.creator === "" ||
       postData.title === "" ||
@@ -37,23 +49,16 @@ function Form({ selectedId }) {
       return;
     }
     if (selectedId) {
-      console.log(postData);
       const obj = {
         id: selectedId,
-        updatedPost: postData
-      }
+        updatedPost: postData,
+      };
       dispatch(updatePost(obj));
+      clear();
     } else {
-      console.log(postData);
       dispatch(createPost(postData));
+      clear();
     }
-    setPostData({
-      creator: "",
-      title: "",
-      message: "",
-      tags: "",
-      selectedFile: "",
-    });
   }
   function handleChange(e) {
     const { name, value } = e.target;
@@ -61,7 +66,6 @@ function Form({ selectedId }) {
       return { ...prev, [name]: value };
     });
   }
-  function clear() {}
   return (
     <Paper elevation={12}>
       <form
@@ -70,7 +74,9 @@ function Form({ selectedId }) {
         className="form"
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">Creating a Memory</Typography>
+        <Typography variant="h6">
+          {selectedId ? "Edit" : "Create"} a Memory
+        </Typography>
         <TextField
           name="title"
           variant="outlined"
