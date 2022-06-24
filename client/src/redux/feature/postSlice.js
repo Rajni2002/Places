@@ -36,6 +36,14 @@ export const updatePost = createAsyncThunk("/posts/updatePost", async (obj) => {
   return { id, data };
 });
 
+export const likePost = createAsyncThunk("/posts/likePost", async (id)=>{
+  const response = await api.patch(`/posts/${id}/likepost`).catch((err) => {
+    console.log(err);
+  });
+  const data = response.data;
+  return { id, data };
+})
+
 const postSlice = createSlice({
   name: "posts",
   initialState: {
@@ -67,7 +75,7 @@ const postSlice = createSlice({
     [createPost.rejected]: (state) => {
       state.posts.loading = false;
     },
-    // Updating the post
+    // Deleting the post
     [deletePost.pending]: (state) => {
       state.posts.loading = true;
     },
@@ -79,8 +87,30 @@ const postSlice = createSlice({
     [deletePost.rejected]: (state) => {
       state.posts.loading = false;
     },
-    // Deleting the post
-    
+    // Updating post
+    [updatePost.pending]: (state) => {
+      state.posts.loading = true;
+    },
+    [updatePost.fulfilled]: (state, { payload }) => {
+      state.posts.loading = false;
+      const {id, data} = payload
+      state.posts.entities.map((post)=> post._id === id ? data : post)
+    },
+    [updatePost.rejected]: (state) => {
+      state.posts.loading = false;
+    },
+    // Like the post
+    [likePost.pending]: (state) => {
+      state.posts.loading = true;
+    },
+    [likePost.fulfilled]: (state, { payload }) => {
+      state.posts.loading = false;
+      const {id, data} = payload
+      state.posts.entities.map((post)=> post._id === id ? data : post)
+    },
+    [likePost.rejected]: (state) => {
+      state.posts.loading = false;
+    },
   },
 });
 

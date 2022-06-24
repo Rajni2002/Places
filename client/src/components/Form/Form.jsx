@@ -37,7 +37,6 @@ function Form({ selectedId, setSelectedId }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("fired submit");
     if (
       postData.creator === "" ||
       postData.title === "" ||
