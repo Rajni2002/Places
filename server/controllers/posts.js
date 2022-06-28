@@ -12,6 +12,7 @@ export const getPosts = async (req, res) => {
 };
 export const createPost = async (req, res) => {
   const post = req.body;
+  console.log(post);
   const newPost = new PostMessage(post);
   try {
     await newPost.save();
@@ -44,7 +45,7 @@ export const deletePost = async (req, res) => {
   }
   await PostMessage.findByIdAndRemove(_id);
   console.log("Post Deleted");
-  res.json({message: "Post deleted Successfully"});
+  res.json({id: _id,message: "Post deleted Successfully"});
 };
 
 export const likePost = async (req, res) => {

@@ -16,7 +16,7 @@ function Form({ selectedId, setSelectedId }) {
   });
   const post = useSelector((state) => {
     return selectedId
-      ? state.post.posts.entities.find((p) => p._id === selectedId)
+      ? state.post.posts.find((p) => p._id === selectedId)
       : null;
   });
   useEffect(() => {
@@ -24,7 +24,6 @@ function Form({ selectedId, setSelectedId }) {
   }, [post]);
 
   function clear() {
-    console.log("inside Clear")
     setPostData({
       creator: "",
       title: "",

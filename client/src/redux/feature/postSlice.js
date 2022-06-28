@@ -1,117 +1,205 @@
 import api from "../../api/index.js";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchPosts = createAsyncThunk("/posts/fetchPosts", async () => {
-  const response = await api.get("/posts").catch((err) => {
-    console.log(err);
-  });
-  return response.data;
-});
+const initialState = {
+  posts: [],
+  createPostStatus: "",
+  createPostError: "",
+  getPostStatus: "",
+  getPostError: "",
+  deletePostStatus: "",
+  deletePostError: "",
+  updatePostStatus: "",
+  updatePostError: "",
+  likePostStatus: "",
+  likePostError: "",
+};
 
-export const deletePost = createAsyncThunk("/posts/deletePost", async (id) => {
-  const response = await api
-    .delete(`/posts/${id}`)
-    .catch((err) => console.log(err));
-  return id;
-});
-
-export const createPost = createAsyncThunk(
-  "/posts/createPosts",
-  async (data) => {
-    console.log(data);
-    const response = await api.post("/posts", data).catch((err) => {
-      console.log(err);
-    });
-    return response.data;
+export const fetchPosts = createAsyncThunk(
+  "/posts/fetchPosts",
+  async (id = null, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/posts");
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response?.data);
+    }
   }
 );
 
-export const updatePost = createAsyncThunk("/posts/updatePost", async (obj) => {
-  const { id, updatedPost } = obj;
-  console.log(updatedPost);
-  const response = await api
-    .patch(`/posts/${id}`, updatedPost)
-    .catch((err) => console.log(err));
-  const data = response.data;
-  return { id, data };
-});
+export const deletePost = createAsyncThunk(
+  "/posts/deletePost",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/posts/${id}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
 
-export const likePost = createAsyncThunk("/posts/likePost", async (id)=>{
-  const response = await api.patch(`/posts/${id}/likepost`).catch((err) => {
-    console.log(err);
-  });
-  const data = response.data;
-  return { id, data };
-})
+export const createPost = createAsyncThunk(
+  "/posts/createPosts",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/posts", data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
+
+export const updatePost = createAsyncThunk(
+  "/posts/updatePost",
+  async (obj, { rejectWithValue }) => {
+    const { id, updatedPost } = obj;
+    try {
+      const response = await api.patch(`/posts/${id}`, updatedPost);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
+
+export const likePost = createAsyncThunk(
+  "/posts/likePost",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.patch(`/posts/${id}/likepost`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
 
 const postSlice = createSlice({
   name: "posts",
-  initialState: {
-    posts: {
-      entities: [],
-      loading: false,
-    },
-  },
+  initialState,
   extraReducers: {
     // Fetch Posts
     [fetchPosts.pending]: (state) => {
-      state.posts.loading = true;
+      return {
+        ...state,
+        getPostStatus: "pending",
+      };
     },
-    [fetchPosts.fulfilled]: (state, { payload }) => {
-      state.posts.loading = false;
-      state.posts.entities = payload;
+    [fetchPosts.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        posts: action.payload,
+        getPostStatus: "success",
+      };
     },
-    [fetchPosts.rejected]: (state) => {
-      state.posts.loading = false;
+    [fetchPosts.rejected]: (state, action) => {
+      return {
+        ...state,
+        getPostError: action.payload,
+        getPostStatus: "rejected",
+      };
     },
     // Create posts
     [createPost.pending]: (state) => {
-      state.posts.loading = true;
+      return {
+        ...state,
+        createPostStatus: "pending",
+      };
     },
-    [createPost.fulfilled]: (state, { payload }) => {
-      state.posts.loading = false;
-      state.posts.entities = [...state.posts.entities, payload];
+    [createPost.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        posts: [...state.posts, action.payload],
+        createPostStatus: "success",
+      };
     },
-    [createPost.rejected]: (state) => {
-      state.posts.loading = false;
+    [createPost.rejected]: (state, action) => {
+      return {
+        ...state,
+        createPostError: action.payload,
+        createPostStatus: "rejected",
+      };
     },
     // Deleting the post
     [deletePost.pending]: (state) => {
-      state.posts.loading = true;
+      return {
+        ...state,
+        deletePostStatus: "pending",
+      };
     },
-    [deletePost.fulfilled]: (state, { payload }) => {
-      state.posts.loading = false;
-      const prevState = state.posts.entities;
-      state.posts.entities = prevState.filter((post)=> post._id !== payload);
+    [deletePost.fulfilled]: (state, action) => {
+      const prevState = state.posts.filter(
+        (post) => post._id !== action.payload.id
+      );
+      return {
+        ...state,
+        posts: prevState,
+        deletePostStatus: "success",
+      };
     },
-    [deletePost.rejected]: (state) => {
-      state.posts.loading = false;
+    [deletePost.rejected]: (state, action) => {
+      return {
+        ...state,
+        deletePostError: action.payload,
+        deletePostStatus: "rejected",
+      };
     },
     // Updating post
     [updatePost.pending]: (state) => {
-      state.posts.loading = true;
+      return {
+        ...state,
+        updatePostStatus: "pending",
+      };
     },
-    [updatePost.fulfilled]: (state, { payload }) => {
-      state.posts.loading = false;
-      const {id, data} = payload
-      state.posts.entities.map((post)=> post._id === id ? data : post)
+    [updatePost.fulfilled]: (state, action) => {
+      const updatedPosts = state.posts.map((post) =>
+        post._id === action.payload._id ? action.payload : post
+      );
+      return {
+        ...state,
+        posts: updatedPosts,
+        updatePostStatus: "success",
+      };
     },
-    [updatePost.rejected]: (state) => {
-      state.posts.loading = false;
+    [updatePost.rejected]: (state, action) => {
+      return {
+        ...state,
+        updatePostError: action.payload,
+        updateStatus: "rejected",
+      };
     },
     // Like the post
     [likePost.pending]: (state) => {
-      state.posts.loading = true;
+      return {
+        ...state,
+        likePostStatus: "pending",
+      };
     },
-    [likePost.fulfilled]: (state, { payload }) => {
-      state.posts.loading = false;
-      const {id, data} = payload
-      state.posts.entities.map((post)=> post._id === id ? data : post)
+    [likePost.fulfilled]: (state, action) => {
+      const likedpost = state.posts.map((post) =>
+        post._id === action.payload._id ? action.payload : post
+      );
+      return {
+        ...state,
+        posts: likedpost,
+        likePostStatus: "success",
+      };
     },
-    [likePost.rejected]: (state) => {
-      state.posts.loading = false;
+    [likePost.rejected]: (state, action) => {
+      return {
+        ...state,
+        likePostError: action.payload,
+        likePostStatus: "rejected",
+      };
     },
   },
 });
 
-export default postSlice;
+export default postSlice.reducer;

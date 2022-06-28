@@ -5,12 +5,12 @@ import { useSelector } from "react-redux";
 import { Grid, CircularProgress } from "@mui/material";
 
 function Posts({setSelectedId}) {
-  const { entities } = useSelector((state) => state.post.posts);
-  return !entities.length ? (
+  const posts = useSelector((state) => state.post.posts);
+  return !posts.length ? (
     <CircularProgress />
   ) : (
     <Grid className="mainContainer" container alignItems="stretch" spacing={3}>
-      {entities.map((post) => (
+      {posts.map((post) => (
         <Grid item key={post._id} xs={12} sm={6}>
           <Post post={post} setSelectedId={setSelectedId}/>
         </Grid>

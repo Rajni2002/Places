@@ -50,7 +50,7 @@ function Post({ post, setSelectedId }) {
         <Typography variant="h4" className="title" gutterBottom>
           {post.title}
         </Typography>
-        <Typography variant="h5" className="title" gutterBottom>
+        <Typography variant="body1" className="title" gutterBottom>
           {post.message}
         </Typography>
       </CardContent>
