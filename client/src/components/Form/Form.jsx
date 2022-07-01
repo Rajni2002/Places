@@ -109,7 +109,7 @@ function Form({ selectedId, setSelectedId }) {
           fullWidth
           className="input"
           value={postData.tags}
-          onChange={handleChange}
+          onChange={(e)=> setPostData({...postData, tags: e.target.value.split(',')})}
         />
         <div className="fileInput">
           <FileBase

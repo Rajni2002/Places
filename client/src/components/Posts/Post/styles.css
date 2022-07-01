@@ -46,3 +46,9 @@
   display: flex;
   justify-content: space-between;
 }
+
+@media screen and (max-width: 600px) {
+  .card{
+    margin: 3rem auto 3rem auto;
+  }
+}

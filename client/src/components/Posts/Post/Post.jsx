@@ -50,14 +50,15 @@ function Post({ post, setSelectedId }) {
         <Typography variant="h4" className="title" gutterBottom>
           {post.title}
         </Typography>
-        <Typography variant="body1" className="title" gutterBottom>
+        <Typography variant="body1" className="title" gutterBottom color="textSecondary">
           {post.message}
         </Typography>
       </CardContent>
       <CardActions className="cardActions">
         <Button size="small" color="primary" onClick={() => {dispatch(likePost(post._id))}}>
           <ThumbUpAltIcon fontSize="small" />
-          {post.likeCount} Like
+          &nbsp; Like &nbsp;
+          {post.likeCount}
         </Button>
         <Button size="small" color="primary" onClick={() => {dispatch(deletePost(post._id))}}>
           <DeleteIcon fontSize="small" />

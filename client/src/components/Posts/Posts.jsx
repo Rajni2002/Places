@@ -7,7 +7,7 @@ import { Grid, CircularProgress } from "@mui/material";
 function Posts({setSelectedId}) {
   const posts = useSelector((state) => state.post.posts);
   return !posts.length ? (
-    <CircularProgress />
+    <CircularProgress className="loader"/>
   ) : (
     <Grid className="mainContainer" container alignItems="stretch" spacing={3}>
       {posts.map((post) => (

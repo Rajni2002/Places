@@ -84,6 +84,22 @@ export const likePost = createAsyncThunk(
 const postSlice = createSlice({
   name: "posts",
   initialState,
+  reducers: {
+    auth: (state, action) => {
+      localStorage.setItem('profile', JSON.stringify({...action.payload?.data}));
+      return {
+        ...state,
+        authData: action.payload?.data
+      }
+    },
+    logout: (state, action) => {
+      localStorage.clear();
+      return {
+        ...state,
+        authData: null
+      }
+    },
+  },
   extraReducers: {
     // Fetch Posts
     [fetchPosts.pending]: (state) => {
@@ -201,5 +217,7 @@ const postSlice = createSlice({
     },
   },
 });
+
+export const { auth, logout } = postSlice.actions;
 
 export default postSlice.reducer;
