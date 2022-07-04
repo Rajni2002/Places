@@ -5,26 +5,29 @@ import places from "../../images/places.png";
 import "./styles.css";
 import { logout } from "../../redux/feature/postSlice"
 import { useDispatch } from "react-redux";
+import decode from 'jwt-decode';
 
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(JSON.parse(localStorage.getItem('profile')));
-
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+  function onLogout(){
+    dispatch(logout({navigate, dispatch}));
+    setUser(null);
+  }
   useEffect(()=>{
     const token = user?.token;
     // JWT ... 
+    if(token){
+      const decodedToken = decode(token);
+      if(decodedToken.exp*1000 < new Date().getTime()) onLogout();
+    }
+
     setUser(JSON.parse(localStorage.getItem('profile')));
   },[location]);
 
-  function onLogout(){
-    dispatch(logout());
-    navigate("/");
-    setUser(null);
-  }
   return (
     <AppBar position="static" color="inherit" className="appBar">
       <div

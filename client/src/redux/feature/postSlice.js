@@ -129,6 +129,8 @@ const postSlice = createSlice({
     },
     logout: (state, action) => {
       localStorage.clear();
+      action.payload.navigate("/");
+      window.location.reload();
       return {
         ...state,
         authData: null,

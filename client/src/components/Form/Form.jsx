@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 function Form({ selectedId, setSelectedId }) {
   const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("profile"));
   const [postData, setPostData] = useState({
-    creator: "",
     title: "",
     message: "",
     tags: "",
@@ -25,7 +25,6 @@ function Form({ selectedId, setSelectedId }) {
 
   function clear() {
     setPostData({
-      creator: "",
       title: "",
       message: "",
       tags: "",
@@ -37,7 +36,6 @@ function Form({ selectedId, setSelectedId }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (
-      postData.creator === "" ||
       postData.title === "" ||
       postData.message === "" ||
       postData.tags === "" ||
@@ -49,12 +47,12 @@ function Form({ selectedId, setSelectedId }) {
     if (selectedId) {
       const obj = {
         id: selectedId,
-        updatedPost: postData,
+        updatedPost: { ...postData, name: user?.result?.name },
       };
       dispatch(updatePost(obj));
       clear();
     } else {
-      dispatch(createPost(postData));
+      dispatch(createPost({ ...postData, name: user?.result?.name }));
       clear();
     }
   }
@@ -63,6 +61,16 @@ function Form({ selectedId, setSelectedId }) {
     setPostData((prev) => {
       return { ...prev, [name]: value };
     });
+  }
+
+  if (!user?.result?.name) {
+    return (
+      <Paper className="paper">
+        <Typography variant="h6" align="center">
+          Please Sign In to create the post
+        </Typography>
+      </Paper>
+    );
   }
   return (
     <Paper elevation={12}>
@@ -85,15 +93,6 @@ function Form({ selectedId, setSelectedId }) {
           onChange={handleChange}
         />
         <TextField
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          className="input"
-          value={postData.creator}
-          onChange={handleChange}
-        />
-        <TextField
           name="message"
           variant="outlined"
           label="Message"
@@ -109,7 +108,9 @@ function Form({ selectedId, setSelectedId }) {
           fullWidth
           className="input"
           value={postData.tags}
-          onChange={(e)=> setPostData({...postData, tags: e.target.value.split(',')})}
+          onChange={(e) =>
+            setPostData({ ...postData, tags: e.target.value.split(",") })
+          }
         />
         <div className="fileInput">
           <FileBase
