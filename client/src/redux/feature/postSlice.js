@@ -81,23 +81,58 @@ export const likePost = createAsyncThunk(
   }
 );
 
+export const signin = createAsyncThunk(
+  "/posts/signin",
+  async (obj, { rejectWithValue }) => {
+    try {
+      // Log in the user ..
+      console.log("!");
+      const response = await api.post(`/users/signin`, obj.formData);
+      localStorage.setItem("profile", JSON.stringify(response.data));
+      obj.navigate("/");
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
+
+export const signup = createAsyncThunk(
+  "/posts/signup",
+  async (obj, { rejectWithValue }) => {
+    try {
+      // Sign up in the user ..
+      const response = await api.post(`/users/signup`, obj.formData);
+      localStorage.setItem("profile", JSON.stringify(response.data));
+      obj.navigate("/");
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
 const postSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
     auth: (state, action) => {
-      localStorage.setItem('profile', JSON.stringify({...action.payload?.data}));
+      localStorage.setItem(
+        "profile",
+        JSON.stringify({ ...action.payload?.data })
+      );
       return {
         ...state,
-        authData: action.payload?.data
-      }
+        authData: action.payload?.data,
+      };
     },
     logout: (state, action) => {
       localStorage.clear();
       return {
         ...state,
-        authData: null
-      }
+        authData: null,
+      };
     },
   },
   extraReducers: {
@@ -213,6 +248,47 @@ const postSlice = createSlice({
         ...state,
         likePostError: action.payload,
         likePostStatus: "rejected",
+      };
+    },
+    // Sign up
+    [signup.pending]: (state) => {
+      return {
+        ...state,
+        signupStatus: "pending",
+      };
+    },
+    [signup.fulfilled]: (state, action) => {
+      console.log("4");
+      return {
+        ...state,
+        authData: action.payload,
+        signupStatus: "success",
+      };
+    },
+    [signup.rejected]: (state) => {
+      return {
+        ...state,
+        signupStatus: "rejected",
+      };
+    },
+    // Sign IN
+    [signin.pending]: (state) => {
+      return {
+        ...state,
+        signinStatus: "pending",
+      };
+    },
+    [signin.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        authData: action.payload,
+        signinStatus: "success",
+      };
+    },
+    [signin.rejected]: (state) => {
+      return {
+        ...state,
+        signinStatus: "rejected",
       };
     },
   },

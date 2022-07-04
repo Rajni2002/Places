@@ -45,16 +45,34 @@ export const deletePost = async (req, res) => {
   }
   await PostMessage.findByIdAndRemove(_id);
   console.log("Post Deleted");
-  res.json({id: _id,message: "Post deleted Successfully"});
+  res.json({ id: _id, message: "Post deleted Successfully" });
 };
 
 export const likePost = async (req, res) => {
   const { id: _id } = req.params;
+
+  if (!req.userId) return res.json({ message: "Unauthorized" });
+
   if (!mongoose.Types.ObjectId.isValid(_id)) {
     console.log("Invalid");
     return res.status(404).send("post is Invalid");
   }
   const post = await PostMessage.findById(_id);
-  const updatedPost = await PostMessage.findByIdAndUpdate(_id, {likeCount: post.likeCount + 1}, {new: true})
+
+  const index = post.likes.findIndex((id) => id === String(req.userId));
+
+  if (index === -1) {
+    // like the post
+    post.likes.push(req.userId);
+  } else {
+    // dislike the post
+    post.like = post.likes.filter((id) => id !== String(req.userId));
+  }
+
+  const updatedPost = await PostMessage.findByIdAndUpdate(
+    _id,
+    post,
+    { new: true }
+  );
   res.json(updatedPost);
-}
+};

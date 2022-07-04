@@ -1,0 +1,13 @@
+.paper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 1rem;
+}
+
+
+.submit{
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+}
