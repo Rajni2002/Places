@@ -3,33 +3,37 @@ import { AppBar, Avatar, Button, Toolbar, Typography } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import places from "../../images/places.png";
 import "./styles.css";
-import { logout } from "../../redux/feature/postSlice"
+import { logout } from "../../redux/feature/postSlice";
 import { useDispatch } from "react-redux";
-import decode from 'jwt-decode';
+import decode from "jwt-decode";
 
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
-  function onLogout(){
-    dispatch(logout({navigate, dispatch}));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  function onLogout() {
+    dispatch(logout({ navigate, dispatch }));
     setUser(null);
   }
-  useEffect(()=>{
+  useEffect(() => {
     const token = user?.token;
-    // JWT ... 
-    if(token){
+    // JWT ...
+    if (token) {
       const decodedToken = decode(token);
-      if(decodedToken.exp*1000 < new Date().getTime()) onLogout();
+      if (decodedToken.exp * 1000 < new Date().getTime()) onLogout();
     }
 
-    setUser(JSON.parse(localStorage.getItem('profile')));
-  },[location]);
+    setUser(JSON.parse(localStorage.getItem("profile")));
+  }, [location]);
 
   return (
-    <AppBar position="static" color="inherit" className="appBar">
+    <AppBar
+      position="static"
+      color="inherit"
+      className="appBar"
+    >
       <div
         className="brandContainer"
         onClick={() => {
@@ -54,13 +58,20 @@ function Navbar() {
             <Typography className="userName" variant="h6">
               {user.result.name}
             </Typography>
-            <Button variant="outlined" color="secondary" className="logout" onClick={onLogout}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              className="logout"
+              onClick={onLogout}
+            >
               Log out
             </Button>
           </div>
         ) : (
           <Button
-            onClick={()=>{navigate('/auth')}}
+            onClick={() => {
+              navigate("/auth");
+            }}
             variant="contained"
             color="primary"
           >

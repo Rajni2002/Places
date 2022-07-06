@@ -56,14 +56,18 @@ function Auth() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if(isSignup && formData.password && (formData.password !== formData.confirmPassword)){
+    if (
+      isSignup &&
+      formData.password &&
+      formData.password !== formData.confirmPassword
+    ) {
       alert("PASSWORD UNMATCHED");
       return;
     }
     if (isSignup) {
-      dispatch(signup({formData, navigate}));
+      dispatch(signup({ formData, navigate }));
     } else {
-      dispatch(signin({formData, navigate}));
+      dispatch(signin({ formData, navigate }));
     }
   }
   function handleChange(e) {
@@ -77,6 +81,14 @@ function Auth() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   }
   function switchMode() {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+    console.log(formData);
     setIsSignup((prevIsSignup) => !prevIsSignup);
     setShowPassword(false);
   }
@@ -96,6 +108,7 @@ function Auth() {
                   name={"firstName"}
                   label={"First Name"}
                   handleChange={handleChange}
+                  value={formData.firstName}
                   autoFocus
                   xs={6}
                 />
@@ -103,6 +116,7 @@ function Auth() {
                   name={"lastName"}
                   label={"Last Name"}
                   handleChange={handleChange}
+                  value={formData.lastName}
                   autoFocus
                   xs={6}
                 />
@@ -111,12 +125,14 @@ function Auth() {
             <Input
               name={"email"}
               label={"Email address"}
+              value={formData.email}
               handleChange={handleChange}
               type={"email"}
             />
             <Input
               name={"password"}
               label={"Password"}
+              value={formData.password}
               handleChange={handleChange}
               type={showPassword ? "text" : "password"}
               handleShowPassword={handleShowPassword}
@@ -125,6 +141,7 @@ function Auth() {
               <Input
                 name={"confirmPassword"}
                 label={"Confirm Password"}
+                value={formData.confirmPassword}
                 handleChange={handleChange}
                 type={showPassword ? "text" : "password"}
                 handleShowPassword={handleShowPassword}
