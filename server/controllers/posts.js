@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 import PostMessage from "../models/postMessage.js";
+
+export const getPostById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const post = await PostMessage.findById(id);
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
 export const getPosts = async (req, res) => {
   const { page } = req.query;
   try {
@@ -11,13 +22,11 @@ export const getPosts = async (req, res) => {
       .limit(LIMIT)
       .skip(startingIndex);
     console.log("Post Fetched");
-    res
-      .status(200)
-      .json({
-        posts,
-        currentPage: Number(page),
-        numberOfPage: Math.ceil(total / LIMIT),
-      });
+    res.status(200).json({
+      posts,
+      currentPage: Number(page),
+      numberOfPage: Math.ceil(total / LIMIT),
+    });
     // res.status(200).json(postMessages);
   } catch (error) {
     res.status(404).json({ message: error.message });

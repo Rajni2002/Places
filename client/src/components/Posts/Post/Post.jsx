@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardActions,
@@ -6,6 +7,7 @@ import {
   Button,
   Typography,
   CardContent,
+  ButtonBase,
 } from "@mui/material";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbUpAltOutlined from "@mui/icons-material/ThumbUpAltOutlined";
@@ -18,6 +20,7 @@ import { useDispatch } from "react-redux";
 
 function Post({ post, setSelectedId }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("profile"));
   const Likes = () => {
     if (post?.likes?.length > 0) {
@@ -47,6 +50,11 @@ function Post({ post, setSelectedId }) {
     );
   };
   return (
+    // <ButtonBase
+    // onClick={() => {
+    //   navigate(`/posts/${post._id}`);
+    // }}
+    //   ></ButtonBase>
     <Card className="card" raised elevation={6}>
       <CardMedia
         className="media"
@@ -74,24 +82,31 @@ function Post({ post, setSelectedId }) {
         </div>
       )}
 
-      <div className="details">
-        <Typography variant="h6" color="textSecondary">
-          {post.tags.map((tag) => `#${tag} `)}
-        </Typography>
-      </div>
-      <CardContent>
-        <Typography variant="h4" className="title" gutterBottom>
-          {post.title}
-        </Typography>
-        <Typography
-          variant="body1"
-          className="title"
-          gutterBottom
-          color="textSecondary"
-        >
-          {post.message}
-        </Typography>
-      </CardContent>
+      <ButtonBase
+      className="buttonBase"
+        onClick={() => {
+          navigate(`/posts/${post._id}`);
+        }}
+      >
+        <div className="details">
+          <Typography variant="h6" color="textSecondary">
+            {post.tags.map((tag) => `#${tag} `)}
+          </Typography>
+        </div>
+        <CardContent>
+          <Typography variant="h4" className="title" gutterBottom>
+            {post.title}
+          </Typography>
+          <Typography
+            variant="body1"
+            className="title"
+            gutterBottom
+            color="textSecondary"
+          >
+            {post.message}
+          </Typography>
+        </CardContent>
+      </ButtonBase>
       <CardActions className="cardActions">
         <Button
           size="small"

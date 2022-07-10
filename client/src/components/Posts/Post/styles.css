@@ -47,6 +47,14 @@
   justify-content: space-between;
 }
 
+.buttonBase{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  align-items:flex-start;
+}
+
 @media screen and (max-width: 600px) {
   .card{
     margin: 3rem auto 3rem auto;

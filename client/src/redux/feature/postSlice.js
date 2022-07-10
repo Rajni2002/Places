@@ -3,16 +3,27 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   posts: [],
-  isLoading: true
+  isLoading: true,
 };
+
+export const getPostById = createAsyncThunk(
+  "/posts/getPostById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get(`/posts/${id}`);
+      return data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
 
 export const fetchPosts = createAsyncThunk(
   "/posts/fetchPosts",
   async (page, { rejectWithValue }) => {
     try {
-      const {data} = await api.get(
-        `/posts?page=${page}`
-      );
+      const { data } = await api.get(`/posts?page=${page}`);
       return data;
     } catch (error) {
       console.log(error);
@@ -323,6 +334,20 @@ const postSlice = createSlice({
         ...state,
         isLoading: true,
         searchError: action.payload,
+      };
+    },
+    // Get posts by id
+    [getPostById.pending]: (state) => {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    },
+    [getPostById.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        post: action.payload,
+        isLoading: false
       };
     },
   },

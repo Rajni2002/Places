@@ -6,6 +6,7 @@ import {
   updatePost,
   deletePost,
   likePost,
+  getPostById
 } from "../controllers/posts.js";
 import auth from "../middleware/auth.js";
 
@@ -17,5 +18,6 @@ router.patch("/:id", auth, updatePost);
 router.delete("/:id", auth, deletePost);
 router.patch("/:id/likepost", auth, likePost);
 router.get('/search', getPostsBySearch);
+router.get('/:id', getPostById);
 
 export default router;
