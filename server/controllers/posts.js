@@ -113,3 +113,15 @@ export const getPostsBySearch = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const postComment = async (req, res) => {
+  const { id } = req.params;
+  const {finalComment} = req.body;
+  const post = await PostMessage.findById(id);
+  console.log(finalComment)
+  post.comments.push(finalComment);
+  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
+    new: true,
+  });
+  res.json(updatedPost);
+};

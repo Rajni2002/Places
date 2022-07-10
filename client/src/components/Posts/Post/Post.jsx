@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -21,23 +21,25 @@ import { useDispatch } from "react-redux";
 function Post({ post, setSelectedId }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [likes, setLikes] = useState(post?.likes);
+
   const user = JSON.parse(localStorage.getItem("profile"));
+  const userId = user?.result.googleId || user?.result?._id;
+
   const Likes = () => {
-    if (post?.likes?.length > 0) {
-      return post.likes.find(
-        (like) => like === (user?.result?.googleId || user?.result?._id)
-      ) ? (
+    if (likes?.length > 0) {
+      return likes.find((like) => like === userId) ? (
         <>
           <ThumbUpAltIcon fontSize="small" />
           &nbsp;
-          {post.likes.length > 2
-            ? `You and ${post.likes.length - 1} others`
-            : `${post.likes.length} like${post.likes.length > 1 ? "s" : ""}`}
+          {likes.length > 2
+            ? `You and ${likes.length - 1} others`
+            : `${likes.length} like${likes.length > 1 ? "s" : ""}`}
         </>
       ) : (
         <>
           <ThumbUpAltOutlined fontSize="small" />
-          &nbsp;{post.likes.length} {post.likes.length === 1 ? "Like" : "Likes"}
+          &nbsp;{likes.length} {likes.length === 1 ? "Like" : "Likes"}
         </>
       );
     }
@@ -50,11 +52,6 @@ function Post({ post, setSelectedId }) {
     );
   };
   return (
-    // <ButtonBase
-    // onClick={() => {
-    //   navigate(`/posts/${post._id}`);
-    // }}
-    //   ></ButtonBase>
     <Card className="card" raised elevation={6}>
       <CardMedia
         className="media"
@@ -83,18 +80,27 @@ function Post({ post, setSelectedId }) {
       )}
 
       <ButtonBase
-      className="buttonBase"
+        className="buttonBase"
         onClick={() => {
           navigate(`/posts/${post._id}`);
         }}
       >
-        <div className="details">
-          <Typography variant="h6" color="textSecondary">
+        <div className="details" style={{ width: "80%" }}>
+          <Typography
+            variant="h6"
+            color="textSecondary"
+            style={{ width: "100%" }}
+          >
             {post.tags.map((tag) => `#${tag} `)}
           </Typography>
         </div>
         <CardContent>
-          <Typography variant="h4" className="title" gutterBottom>
+          <Typography
+            variant="h4"
+            className="title"
+            gutterBottom
+            style={{ width: "100%" }}
+          >
             {post.title}
           </Typography>
           <Typography
@@ -102,6 +108,7 @@ function Post({ post, setSelectedId }) {
             className="title"
             gutterBottom
             color="textSecondary"
+            style={{ width: "100%" }}
           >
             {post.message}
           </Typography>
@@ -111,8 +118,14 @@ function Post({ post, setSelectedId }) {
         <Button
           size="small"
           color="primary"
-          onClick={() => {
+          onClick={async () => {
             dispatch(likePost(post._id));
+            console.log(likes.length);
+            if (likes.length && likes.find((like) => like === userId)) {
+              setLikes(likes.filter((id) => id !== userId));
+            } else {
+              setLikes([...likes, userId]);
+            }
           }}
           disabled={!user?.result}
         >

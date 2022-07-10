@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { auth, signin, signup } from "../../redux/feature/postSlice";
 import {
   Avatar,
@@ -165,7 +165,8 @@ function Auth() {
                 color="primary"
                 fullWidth
                 onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
+                // disabled={renderProps.disabled}
+                disabled
                 startIcon={<Icon />}
                 variant="contained"
               >

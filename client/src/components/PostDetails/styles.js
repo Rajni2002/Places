@@ -12,7 +12,7 @@ export default makeStyles((theme) => ({
     width: "100%",
     "@media (max-width: 600px)": {
       flexWrap: "wrap",
-      flexDirection: "column",
+      flexDirection: "column-reverse",
     },
   },
   section: {
@@ -42,6 +42,7 @@ export default makeStyles((theme) => ({
   },
   commentsOuterContainer: {
     display: "flex",
+    flexDirection: "column",
     justifyContent: "space-between",
   },
   commentsInnerContainer: {

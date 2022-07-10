@@ -36,10 +36,12 @@
 .details {
   display: flex;
   justify-content: space-between;
+  text-align: left;
   margin: 20px;
 }
 .title {
   padding: 0 16px;
+  text-align: left;
 }
 .cardActions {
   padding: 0 16px 8px 16px;
@@ -50,7 +52,7 @@
 .buttonBase{
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content:space-between;
   text-align: left;
   align-items:flex-start;
 }

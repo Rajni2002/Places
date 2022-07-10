@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { useNavigate, useParams } from "react-router-dom";
 
+import CommentSection from "./CommentSection.jsx";
+
 import useStyles from "./styles.js";
 import { getPostById, getPostBySearch } from "../../redux/feature/postSlice.js";
 
@@ -59,9 +61,9 @@ function PostDetails() {
           <Typography variant="body1">
             <strong>Realtime Chat - coming soon!</strong>
           </Typography>
-          {/* <Divider style={{ margin: "20px 0" }} />
+          <Divider style={{ margin: "20px 0" }} />
           <CommentSection post={post} />
-          <Divider style={{ margin: "20px 0" }} /> */}
+          <Divider style={{ margin: "20px 0" }} />
         </div>
         <div className={classes.imageSection}>
           <img

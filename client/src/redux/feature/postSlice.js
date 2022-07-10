@@ -136,6 +136,21 @@ export const signup = createAsyncThunk(
     }
   }
 );
+
+export const postComment = createAsyncThunk(
+  "/posts/postComment",
+  async ({ finalComment, id }, { rejectWithValue }) => {
+    try {
+      console.log(finalComment);
+      const { data } = await api.post(`/posts/${id}/commentpost`, {
+        finalComment: finalComment,
+      });
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
 const postSlice = createSlice({
   name: "posts",
   initialState,
@@ -210,6 +225,7 @@ const postSlice = createSlice({
       return {
         ...state,
         deletePostStatus: "pending",
+        isLoading: true,
       };
     },
     [deletePost.fulfilled]: (state, action) => {
@@ -219,6 +235,7 @@ const postSlice = createSlice({
       return {
         ...state,
         posts: prevState,
+        isLoading: false,
         deletePostStatus: "success",
       };
     },
@@ -227,6 +244,7 @@ const postSlice = createSlice({
         ...state,
         deletePostError: action.payload,
         deletePostStatus: "rejected",
+        isLoading: true,
       };
     },
     // Updating post
@@ -234,6 +252,7 @@ const postSlice = createSlice({
       return {
         ...state,
         updatePostStatus: "pending",
+        isLoading: true,
       };
     },
     [updatePost.fulfilled]: (state, action) => {
@@ -244,6 +263,7 @@ const postSlice = createSlice({
         ...state,
         posts: updatedPosts,
         updatePostStatus: "success",
+        isLoading:false
       };
     },
     [updatePost.rejected]: (state, action) => {
@@ -251,6 +271,7 @@ const postSlice = createSlice({
         ...state,
         updatePostError: action.payload,
         updateStatus: "rejected",
+        isLoading:true
       };
     },
     // Like the post
@@ -361,6 +382,29 @@ const postSlice = createSlice({
         isLoading: true,
         post: "",
         getPostByIdError: action.payload,
+      };
+    },
+    // Comment
+    [postComment.pending]: (state) => {
+      return {
+        ...state,
+      };
+    },
+    [postComment.fulfilled]: (state, action) => {
+      const updatedPosts = state.posts.map((post) =>
+        post._id === action.payload._id ? action.payload : post
+      );
+      return {
+        ...state,
+        posts: updatedPosts,
+        updatePostStatus: "success",
+        isLoading: false,
+      };
+    },
+    [postComment.rejected]: (state, action) => {
+      return {
+        ...state,
+        postCommentError: action.payload,
       };
     },
   },
