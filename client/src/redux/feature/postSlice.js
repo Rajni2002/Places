@@ -3,27 +3,36 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   posts: [],
-  createPostStatus: "",
-  createPostError: "",
-  getPostStatus: "",
-  getPostError: "",
-  deletePostStatus: "",
-  deletePostError: "",
-  updatePostStatus: "",
-  updatePostError: "",
-  likePostStatus: "",
-  likePostError: "",
+  isLoading: true
 };
 
 export const fetchPosts = createAsyncThunk(
   "/posts/fetchPosts",
-  async (id = null, { rejectWithValue }) => {
+  async (page, { rejectWithValue }) => {
     try {
-      const response = await api.get("/posts");
-      return response.data;
+      const {data} = await api.get(
+        `/posts?page=${page}`
+      );
+      return data;
     } catch (error) {
       console.log(error);
       return rejectWithValue(error.response?.data);
+    }
+  }
+);
+
+export const getPostBySearch = createAsyncThunk(
+  "/posts/getPostBySearch",
+  async (searchQuery, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get(
+        `/posts/search?searchQuery=${searchQuery.search || "none"}&tags=${
+          searchQuery.tags || "none"
+        }`
+      );
+      return data.posts;
+    } catch (error) {
+      console.log(error);
     }
   }
 );
@@ -86,14 +95,13 @@ export const signin = createAsyncThunk(
   async (obj, { rejectWithValue }) => {
     try {
       // Log in the user ..
-      console.log("!");
       const response = await api.post(`/users/signin`, obj.formData);
       localStorage.setItem("profile", JSON.stringify(response.data));
       obj.navigate("/");
       return response.data;
     } catch (error) {
       console.log(error);
-      return rejectWithValue(error.response?.data);
+      return rejectWithValue(error.response);
     }
   }
 );
@@ -109,7 +117,7 @@ export const signup = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.log(error);
-      return rejectWithValue(error.response?.data);
+      return rejectWithValue(error.response);
     }
   }
 );
@@ -142,42 +150,44 @@ const postSlice = createSlice({
     [fetchPosts.pending]: (state) => {
       return {
         ...state,
-        getPostStatus: "pending",
+        isLoading: true,
       };
     },
     [fetchPosts.fulfilled]: (state, action) => {
       return {
         ...state,
-        posts: action.payload,
-        getPostStatus: "success",
+        posts: action.payload.posts,
+        numberOfPage: action.payload.numberOfPage,
+        currentPage: action.payload.currentPage,
+        isLoading: false,
       };
     },
     [fetchPosts.rejected]: (state, action) => {
       return {
         ...state,
         getPostError: action.payload,
-        getPostStatus: "rejected",
+        isLoading: true,
       };
     },
     // Create posts
     [createPost.pending]: (state) => {
       return {
         ...state,
-        createPostStatus: "pending",
+        isLoading: true,
       };
     },
     [createPost.fulfilled]: (state, action) => {
       return {
         ...state,
         posts: [...state.posts, action.payload],
-        createPostStatus: "success",
+        isLoading: false,
       };
     },
     [createPost.rejected]: (state, action) => {
       return {
         ...state,
         createPostError: action.payload,
-        createPostStatus: "rejected",
+        isLoading: true,
       };
     },
     // Deleting the post
@@ -260,17 +270,17 @@ const postSlice = createSlice({
       };
     },
     [signup.fulfilled]: (state, action) => {
-      console.log("4");
       return {
         ...state,
         authData: action.payload,
         signupStatus: "success",
       };
     },
-    [signup.rejected]: (state) => {
+    [signup.rejected]: (state, action) => {
       return {
         ...state,
         signupStatus: "rejected",
+        signupError: action.payload,
       };
     },
     // Sign IN
@@ -287,10 +297,32 @@ const postSlice = createSlice({
         signinStatus: "success",
       };
     },
-    [signin.rejected]: (state) => {
+    [signin.rejected]: (state, action) => {
       return {
         ...state,
         signinStatus: "rejected",
+        signinError: action.payload?.data,
+      };
+    },
+    // Search by query
+    [getPostBySearch.pending]: (state) => {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    },
+    [getPostBySearch.fulfilled]: (state, action) => {
+      return {
+        ...state,
+        posts: action.payload,
+        isLoading: false,
+      };
+    },
+    [getPostBySearch.rejected]: (state, action) => {
+      return {
+        ...state,
+        isLoading: true,
+        searchError: action.payload,
       };
     },
   },

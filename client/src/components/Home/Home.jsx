@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { fetchPosts } from "../../redux/feature/postSlice";
+import { getPostBySearch } from "../../redux/feature/postSlice";
 import { Grow, Grid, Paper, AppBar, TextField, Container, Button } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import ChipInput from "material-ui-chip-input";
 
 import Posts from "../Posts/Posts";
 import Form from "../Form/Form";
-import Paginate from "../Pagination";
+import Paginate from "../Paginate";
 import useStyles from "./styles";
 
 function useQuery() {
@@ -24,13 +24,12 @@ function Home() {
   const page = query.get("page") || 1;
   const searchQuery = query.get("searchQuery");
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchPosts());
-  }, [dispatch, selectedId]);
 
   function searchPost(){
-    if(search.trim()){
+    if(search.trim() || tags){
       // Dispatch -> Fetch sarch post
+      dispatch(getPostBySearch({search, tags: tags.join(','), navigate}));
+      navigate(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`);
     }else{
       navigate("/");
     }
@@ -45,10 +44,10 @@ function Home() {
       <Container maxWidth="xl">
         <Grid
           container
-          // className={classes.gridContainer}
+          className={classes.gridContainer}
           justifyContent="space-between"
           alignItems="stretch"
-          spacing="3"
+          spacing={5}
         >
           <Grid item xs={12} sm={6} md={9}>
             <Posts setSelectedId={setSelectedId} />
@@ -89,9 +88,11 @@ function Home() {
               >Search</Button>
             </AppBar>
             <Form selectedId={selectedId} setSelectedId={setSelectedId} />
-            <Paper elevation={6}>
-              <Paginate />
+            {(!searchQuery && !tags.length) && (
+            <Paper elevation={6} className={classes.pagination}>
+              <Paginate page={page}/>
             </Paper>
+            )}
           </Grid>
         </Grid>
       </Container>

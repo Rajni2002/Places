@@ -47,7 +47,7 @@ function Post({ post, setSelectedId }) {
     );
   };
   return (
-    <Card className="card">
+    <Card className="card" raised elevation={6}>
       <CardMedia
         className="media"
         image={post.selectedFile}

@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getPostsBySearch,
   getPosts,
   createPost,
   updatePost,
@@ -15,5 +16,6 @@ router.post("/", auth, createPost);
 router.patch("/:id", auth, updatePost);
 router.delete("/:id", auth, deletePost);
 router.patch("/:id/likepost", auth, likePost);
+router.get('/search', getPostsBySearch);
 
 export default router;

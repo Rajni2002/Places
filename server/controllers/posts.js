@@ -1,10 +1,23 @@
 import mongoose from "mongoose";
 import PostMessage from "../models/postMessage.js";
 export const getPosts = async (req, res) => {
+  const { page } = req.query;
   try {
-    const postMessages = await PostMessage.find();
+    const LIMIT = 6;
+    const startingIndex = (Number(page) - 1) * LIMIT;
+    const total = await PostMessage.countDocuments({});
+    const posts = await PostMessage.find()
+      .sort({ _id: -1 })
+      .limit(LIMIT)
+      .skip(startingIndex);
     console.log("Post Fetched");
-    res.send(postMessages);
+    res
+      .status(200)
+      .json({
+        posts,
+        currentPage: Number(page),
+        numberOfPage: Math.ceil(total / LIMIT),
+      });
     // res.status(200).json(postMessages);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -77,4 +90,17 @@ export const likePost = async (req, res) => {
     new: true,
   });
   res.json(updatedPost);
+};
+export const getPostsBySearch = async (req, res) => {
+  const { searchQuery, tags } = req.query;
+
+  try {
+    const title = new RegExp(searchQuery, "i");
+    const posts = await PostMessage.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+    });
+    res.json({ posts });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
