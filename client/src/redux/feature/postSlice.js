@@ -103,15 +103,17 @@ export const likePost = createAsyncThunk(
 
 export const signin = createAsyncThunk(
   "/posts/signin",
-  async (obj, { rejectWithValue }) => {
+  async ({ formData, navigate }, { rejectWithValue }) => {
     try {
       // Log in the user ..
-      const response = await api.post(`/users/signin`, obj.formData);
+      const response = await api.post(`/users/signin`, formData);
       localStorage.setItem("profile", JSON.stringify(response.data));
-      obj.navigate("/");
+      navigate("/");
       return response.data;
     } catch (error) {
       console.log(error);
+      if (error.response.data.code === 400) alert("Invalid password");
+      else if (error.response.data.code === 404) alert("User Does'nt Exist");
       return rejectWithValue(error.response);
     }
   }
@@ -119,15 +121,17 @@ export const signin = createAsyncThunk(
 
 export const signup = createAsyncThunk(
   "/posts/signup",
-  async (obj, { rejectWithValue }) => {
+  async ({ formData, navigate }, { rejectWithValue }) => {
     try {
       // Sign up in the user ..
-      const response = await api.post(`/users/signup`, obj.formData);
+      const response = await api.post(`/users/signup`, formData);
       localStorage.setItem("profile", JSON.stringify(response.data));
-      obj.navigate("/");
+      navigate("/");
       return response.data;
     } catch (error) {
       console.log(error);
+      if (error.response.data.code === 409) alert("User already exists");
+      else if (error.response.data.code === 404) alert("Password Don't match");
       return rejectWithValue(error.response);
     }
   }
@@ -341,13 +345,22 @@ const postSlice = createSlice({
       return {
         ...state,
         isLoading: true,
+        post: "",
       };
     },
     [getPostById.fulfilled]: (state, action) => {
       return {
         ...state,
         post: action.payload,
-        isLoading: false
+        isLoading: false,
+      };
+    },
+    [getPostById.rejected]: (state, action) => {
+      return {
+        ...state,
+        isLoading: true,
+        post: "",
+        getPostByIdError: action.payload,
       };
     },
   },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch} from "react-redux";
 import { auth, signin, signup } from "../../redux/feature/postSlice";
 import {
   Avatar,
@@ -54,7 +54,7 @@ function Auth() {
     console.log("FAILED", response);
   };
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (
       isSignup &&
