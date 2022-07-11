@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:1317",
+  "proxy": "https://mern-places-2k2.herokuapp.com",
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
     "gapi-script": "^1.2.0",
+    "gh-pages": "^4.0.0",
     "jwt-decode": "^3.1.2",
     "material-ui-chip-input": "^1.1.0",
     "moment": "^2.29.3",

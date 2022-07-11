@@ -13,8 +13,8 @@ export default makeStyles((theme) => ({
       padding: '16px',
     },
     gridContainer: {
-      "@media (max-width: 600px)": {
-        flexDirection: 'column-reverse',
+      "@media only screen and (max-width: 600px)": {
+        flexDirection: 'column-reverse !important',
       },
     },
   }));
