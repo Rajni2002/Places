@@ -26,6 +26,19 @@ function Post({ post, setSelectedId }) {
   const user = JSON.parse(localStorage.getItem("profile"));
   const userId = user?.result.googleId || user?.result?._id;
 
+  const truncate = (str, len) => {
+    if (str.length > len) {
+       if (len <= 3) {
+          return str.slice(0, len - 3) + "...";
+       }
+       else {
+          return str.slice(0, len) + "...";
+       };
+    }
+    else {
+       return str;
+    };
+ };
   const Likes = () => {
     if (likes?.length > 0) {
       return likes.find((like) => like === userId) ? (
@@ -58,12 +71,6 @@ function Post({ post, setSelectedId }) {
         image={post.selectedFile}
         title={post.title}
       />
-      <div className="overlay">
-        <Typography variant="h6">{post.name}</Typography>
-        <Typography variant="body2">
-          {moment(post.createdAt).fromNow()}
-        </Typography>
-      </div>
       {(user?.result?.googleId === post?.creator ||
         user?.result?._id === post?.creator) && (
         <div className="overlay2">
@@ -85,6 +92,12 @@ function Post({ post, setSelectedId }) {
           navigate(`/posts/${post._id}`);
         }}
       >
+        <div className="head-cover">
+          <Typography variant="h6" color="primary">{post.name}</Typography>
+          <Typography variant="body2" color="primary">
+            {moment(post.createdAt).fromNow()}
+          </Typography>
+        </div>
         <div className="details" style={{ width: "80%" }}>
           <Typography
             variant="h6"
@@ -94,7 +107,7 @@ function Post({ post, setSelectedId }) {
             {post.tags.map((tag) => `#${tag} `)}
           </Typography>
         </div>
-        <CardContent>
+        <CardContent style={{width: "85%"}}>
           <Typography
             variant="h4"
             className="title"
@@ -108,9 +121,9 @@ function Post({ post, setSelectedId }) {
             className="title"
             gutterBottom
             color="textSecondary"
-            style={{ width: "100%" }}
+            align="justify"
           >
-            {post.message}
+            {truncate(post.message, 100)}
           </Typography>
         </CardContent>
       </ButtonBase>

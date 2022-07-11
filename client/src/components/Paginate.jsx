@@ -15,14 +15,18 @@ function Paginate({ page }) {
   }, [dispatch, page]);
   return (
     <Pagination
-    className={classes.paginate}
+      style={{ width: "100%" }}
       classes={{ ul: classes.ul }}
       count={numberOfPage}
       page={Number(page) || 1}
       variant="outlined"
       color="primary"
       renderItem={(item) => (
-        <PaginationItem {...item} component={Link} to={`/posts?page=${item.page}`} />
+        <PaginationItem
+          {...item}
+          component={Link}
+          to={`/posts?page=${item.page}`}
+        />
       )}
     />
   );
