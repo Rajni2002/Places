@@ -18,6 +18,10 @@ app.use(cors());
 app.use('/posts', postRouter);//This route can be accessed by /posts route only not by '/'
 app.use('/users', userRouter);
 
+app.get("/", (req, res)=>{
+  res.send('App is Running - properly');
+})
+
 const PORT = process.env.PORT || 1317;
 mongoose
   .connect(process.env.CONNECTION_URL, {
