@@ -16,5 +16,6 @@ export default makeStyles((theme) => ({
       "@media only screen and (max-width: 600px)": {
         flexDirection: 'column-reverse !important',
       },
+      marginBottom: '5rem'
     },
   }));

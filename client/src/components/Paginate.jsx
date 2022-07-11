@@ -15,6 +15,7 @@ function Paginate({ page }) {
   }, [dispatch, page]);
   return (
     <Pagination
+    className={classes.paginate}
       classes={{ ul: classes.ul }}
       count={numberOfPage}
       page={Number(page) || 1}
