@@ -1,4 +1,4 @@
-# Places is a full-stack social media MERN web app.
+# [Places](https://places-six-chi.vercel.app) is a full-stack social media MERN web app.
 
 
 ### Key features
@@ -22,6 +22,3 @@
 - Frontend on vercel
 - Backend server on Heroku
 - Database on MongoDB atlas
-
-
-[LIVE SITE](https://places-six-chi.vercel.app)
