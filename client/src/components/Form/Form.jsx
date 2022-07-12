@@ -95,11 +95,14 @@ function Form({ selectedId, setSelectedId }) {
         <TextField
           name="message"
           variant="outlined"
-          label="Message"
+          label="Post"
           fullWidth
           className="input"
           value={postData.message}
           onChange={handleChange}
+          rows={5}
+          multiline
+          maxRows={10}
         />
         <TextField
           name="tags"
